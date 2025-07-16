@@ -10,7 +10,7 @@ import com.openai.models.ChatModel;
 import com.openai.models.responses.Response;
 import com.openai.models.responses.ResponseCreateParams;
 
-public final static class AzureUnifiedEndpointExample {
+public final class AzureUnifiedEndpointExample {
 
      public static void main(String[] args) throws Exception {
         OpenAIClient client = OpenAIOkHttpClient.builder()
@@ -31,6 +31,15 @@ public final static class AzureUnifiedEndpointExample {
                 .flatMap(message -> message.content().stream())
                 .flatMap(content -> content.outputText().stream())
                 .map(outputText -> outputText.text())
+                .forEach(System.out::println);
+
+        ChatCompletionCreateParams createParams = ChatCompletionCreateParams.builder()
+                .model(ChatModel.GPT_4O_MINI)
+                .addUserMessage("Write me a haiku about the number pi")
+                .build();
+
+        client.chat().completions().create(createParams).choices().stream()
+                .flatMap(choice -> choice.message().content().stream())
                 .forEach(System.out::println);
     }
 
